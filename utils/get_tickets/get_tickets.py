@@ -1,12 +1,11 @@
 import json
-import os
-from dotenv import load_dotenv, find_dotenv
+from config_data import config
 import requests
+import pprint
 
-load_dotenv()
-async def get_tickets(data):
+def get_tickets(data):
     """В этой функции получаем список билетов"""
-    token_av = os.getenv('TOKEN_AV')
+    token_av = config.TOKEN_AV
     origin = data['from_city']
     destination = data['to_city']
     departure_at = ''
@@ -14,8 +13,15 @@ async def get_tickets(data):
     start_ticket = 'https://www.aviasales.ru'
     url = requests.get(f'https://api.travelpayouts.com/aviasales/v3/prices_for_dates?origin={origin}&destination={destination}&currency=&departure_at={departure_at}&return_at={return_at}&sorting=price&direct=true&limit=10&token={token_av}')
     data = json.loads(url.text)
-    return data
+    pprint.pprint(data)
 
+    info_ticket = f"Вылетаем {origin}\nЛетим в {destination}\nДата {data['data'][0]['departure_at']}\nЦена {data['data'][0]['price']}"
+    return info_ticket
+
+
+# a = {'from_city': "LED", 'to_city': "OMS" }
+#
+# get_tickets(a)
 
 """
 currency — валюта цен на билеты. Значение по умолчанию — rub.
