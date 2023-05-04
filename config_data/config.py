@@ -11,5 +11,5 @@ TOKEN_AV = os.getenv('TOKEN_AV')
 DEFAULT_COMMANDS = (
     ("start", "Запустить бота"),
     ("help", "Вывести справку"),
-    ("search", "Найти билеты")
+    ("search", "Найти билет из точки А в точку Б")
 )

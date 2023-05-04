@@ -8,10 +8,9 @@ from states.ticket_info import FlightInfo
 
 @dp.message_handler(commands=['search'])
 async def search(message: types.Message, state: FSMContext):
-    """тут начинается первая команда, как перенести ее в другйо файл, пока не додумался"""
     await message.answer('Начнем поиск')
     await state.set_state(FlightInfo.from_city)
-    await message.answer('Из какого города вылетаем?')
+    await message.answer('Откуда?')
 
 
 @dp.message_handler(state=FlightInfo.from_city)
@@ -19,7 +18,7 @@ async def get_city_from(message: types.Message, state: FSMContext):
     code = get_code_city(message.text)
     await state.update_data(from_city=code)
     await state.set_state(FlightInfo.to_city)
-    await message.answer('Куда летим?')
+    await message.answer('Куда?')
 
 
 @dp.message_handler(state=FlightInfo.to_city)
@@ -42,5 +41,5 @@ async def get_date_to(message: types.Message, state: FSMContext):
     await state.update_data(to_date=message.text)
     user_data = await state.get_data()
     await state.finish()
-    result =  get_tickets(user_data)
+    result = get_tickets(user_data)
     await message.answer(result)

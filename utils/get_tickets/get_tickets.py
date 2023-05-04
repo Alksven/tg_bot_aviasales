@@ -1,7 +1,7 @@
 import json
 from config_data import config
 import requests
-import pprint
+
 
 def get_tickets(data):
     """В этой функции получаем список билетов"""
@@ -13,7 +13,6 @@ def get_tickets(data):
     start_ticket = 'https://www.aviasales.ru'
     url = requests.get(f'https://api.travelpayouts.com/aviasales/v3/prices_for_dates?origin={origin}&destination={destination}&currency=&departure_at={departure_at}&return_at={return_at}&sorting=price&direct=true&limit=10&token={token_av}')
     data = json.loads(url.text)
-    pprint.pprint(data)
 
     info_ticket = f"Вылетаем {origin}\nЛетим в {destination}\nДата {data['data'][0]['departure_at']}\nЦена {data['data'][0]['price']}"
     return info_ticket
