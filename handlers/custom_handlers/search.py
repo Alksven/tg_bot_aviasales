@@ -5,7 +5,8 @@ from utils.get_tickets.get_tickets import get_tickets
 from aiogram.dispatcher import FSMContext
 from states.ticket_info import FlightInfo
 from keyboards.reply.calendar import start_date
-from telegram_bot_calendar import DetailedTelegramCalendar, LSTEP
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
+
 
 
 @dp.message_handler(commands=['search'])
@@ -29,15 +30,14 @@ async def get_city_to(message: types.Message, state: FSMContext):
     await state.update_data(to_city=code)
     await state.set_state(FlightInfo.from_date)
     await message.answer('С какого числа ищем билеты?')
-    date = await start_date(message.chat.id)
-    await message.answer(date)
+    await start_date(message.chat.id)
+
 
 @dp.message_handler(state=FlightInfo.from_date)
 async def get_date_from(message: types.Message, state: FSMContext):
-    await state.update_data(from_date=0)
-    print(get_date_to.date)
     await state.set_state(FlightInfo.to_date)
     await message.answer('По какое число ищем билеты?')
+    await start_date(message.chat.id)
 
 
 @dp.message_handler(state=FlightInfo.to_date)

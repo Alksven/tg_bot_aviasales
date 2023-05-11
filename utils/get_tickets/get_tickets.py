@@ -8,13 +8,15 @@ def get_tickets(data):
     token_av = config.TOKEN_AV
     origin = data['from_city']
     destination = data['to_city']
-    departure_at = ''
-    return_at = ''
+    departure_at = data['from_date']
+    print(departure_at)
+    return_at = ''#data['to_date']
     start_ticket = 'https://www.aviasales.ru'
     url = requests.get(f'https://api.travelpayouts.com/aviasales/v3/prices_for_dates?origin={origin}&destination={destination}&currency=&departure_at={departure_at}&return_at={return_at}&sorting=price&direct=true&limit=10&token={token_av}')
-    data = json.loads(url.text)
+    data_ticket = json.loads(url.text)
+    print(data_ticket)
 
-    info_ticket = f"Вылетаем {origin}\nЛетим в {destination}\nДата {data['data'][0]['departure_at']}\nЦена {data['data'][0]['price']}"
+    info_ticket = f"Вылетаем {origin}\nЛетим в {destination}\nДата {data_ticket['data'][0]['departure_at']}\nЦена {data_ticket['data'][0]['price']}\nСсылка на билет {start_ticket+data_ticket['data'][0]['link']}"
     return info_ticket
 
 
