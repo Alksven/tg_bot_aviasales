@@ -1,42 +1,48 @@
 import json
+from utils.get_info_ticket.info_ticket import print_info_ticket
+from keyboards.inline import back_forward
 from config_data import config
 import requests
+from aiogram import types
+from loder import dp, bot
+from aiogram.dispatcher import FSMContext
+from states.ticket_info import FlightInfo
+
+
+async def start_search_ticket(message: types.Message, state: FSMContext):
+    """Функция завершает сбор данных"""
+    user_data = await state.get_data()
+    await state.finish()
+    list_tickets = get_tickets(user_data)
+    await state.set_state(FlightInfo.get_ticket)
+    await state.update_data(list_tickets=list_tickets, num_ticket=1)
+    await print_info_ticket(message, state)
+    # await message.answer(text=f'{info}', reply_markup=back_forward.ticket_selection())
+
 
 
 def get_tickets(data):
     """В этой функции получаем список билетов"""
+    request_url = "https://api.travelpayouts.com/aviasales/v3/prices_for_dates?"
     token_av = config.TOKEN_AV
-    origin = data['from_city']
-    destination = data['to_city']
-    departure_at = data['from_date']
-    print(departure_at)
-    return_at = ''#data['to_date']
-    start_ticket = 'https://www.aviasales.ru'
-    url = requests.get(f'https://api.travelpayouts.com/aviasales/v3/prices_for_dates?origin={origin}&destination={destination}&currency=&departure_at={departure_at}&return_at={return_at}&sorting=price&direct=true&limit=10&token={token_av}')
-    data_ticket = json.loads(url.text)
-    print(data_ticket)
+    list_tickets = dict()
+    params = {
+        "origin": data['from_city'],
+        "destination": data['to_city'],
+        "beginning_of_period": data['FlightInfo:from_date'],
+        "period_type": data['FlightInfo:to_date'],
+        "one_way": "true",
+        "sorting": "price",
+        "show_to_affiliates": "true",
+        "page": "1",
+        "limit": "10",
+        "token": token_av
+    }
 
-    info_ticket = f"Вылетаем {origin}\nЛетим в {destination}\nДата {data_ticket['data'][0]['departure_at']}\nЦена {data_ticket['data'][0]['price']}\nСсылка на билет {start_ticket+data_ticket['data'][0]['link']}"
-    return info_ticket
+    response = requests.get(request_url, params=params)
+    data = response.json()
+    tickets = data["data"]
+    for i_ticket, ticket in enumerate(tickets):
+        list_tickets[i_ticket + 1] = ticket
 
-
-# a = {'from_city': "LED", 'to_city': "OMS" }
-#
-# get_tickets(a)
-
-"""
-currency — валюта цен на билеты. Значение по умолчанию — rub.
-origin — пункт отправления. IATA-код города или аэропорта. Длина не менее двух и не более трёх символов. Необходимо указать, если нет destination.
-destination — пункт назначения. IATA-код города или аэропорта. Длина не менее двух и не более трёх. Необходимо указать, если нет origin.
-departure_at (необязательно)— дата вылета из пункта отправления (в формате YYYY-MM или YYYY-MM-DD).
-return_at (необязательно) — дата возвращения. Чтобы получить билеты в один конец, оставьте это поле пустым.
-one_way (необязательно) — билет в одну сторону. Принимает значения true илиfalse. По умолчаниюtrue. При значении true возвращает 1 билет. Используйте значение false, чтобы получить больше предложений.
-direct — получить рейсы без пересадок. Принимает значения true или false. По умолчанию false.
-market — задаёт маркет источника данных (по умолчанию ru).
-limit — количество записей в ответе. Значение по умолчанию — 30. Не более 1000.
-page — номер страницы. Используется, чтобы пропустить первые записи. То есть, выдача будет отдавать билеты в диапазоне [(page — 1) * limit; page * limit]. Таким образом, если мы хотим получить билеты с 100 по 150, то мы должны установить page=3, а limit=50.
-sorting — сортировка цен:
-price — по цене (значение по умолчанию).
-route — по популярности маршрута.
-unique — возвращает только уникальные направления, если был указан origin, но не указан destination. Позволяет собрать топ самых дешевых билетов из указанного города. Принимает значения true или false. По умолчанию false.
-"""
+    return list_tickets

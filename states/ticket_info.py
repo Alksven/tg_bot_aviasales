@@ -6,4 +6,5 @@ class FlightInfo(StatesGroup):
     to_city = State()
     from_date = State()
     to_date = State()
+    get_ticket = State()
 
