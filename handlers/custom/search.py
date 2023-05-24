@@ -21,7 +21,7 @@ async def get_city_from(message: types.Message, state: FSMContext):
     Функция записывает в состояние город вылета и устанавливается состояние FlightInfo.to_city и
     запрашивает город прибытия
     """
-    code = get_code_city(message.text)
+    code = "LED" #get_code_city(message.text)
     await state.update_data(from_city=code)
     await state.set_state(FlightInfo.to_city)
     await message.answer('Куда?')
@@ -32,7 +32,7 @@ async def get_city_to(message: types.Message, state: FSMContext):
     Функция записывает в состояние город прибытия, устанавливается состояние FlightInfo.from_date и
     запрашивает с какой даты искать билеты, путем отправки инлайн клавиатуры
     """
-    code = get_code_city(message.text)
+    code = "MOW" #get_code_city(message.text)
     await state.update_data(to_city=code)
     await state.set_state(FlightInfo.from_date)
     await message.answer(text='Выберите дату', reply_markup=add_date.start_get_date())
