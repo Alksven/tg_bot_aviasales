@@ -1,7 +1,0 @@
-Aviasales API автокомплита для  стран, городов и аэропортов https://support.travelpayouts.com/hc/ru/articles/360002322572-API-%D0%B0%D0%B2%D1%82%D0%BE%D0%BA%D0%BE%D0%BC%D0%BF%D0%BB%D0%B8%D1%82%D0%B0-%D0%B4%D0%BB%D1%8F-%D1%81%D1%82%D1%80%D0%B0%D0%BD-%D0%B3%D0%BE%D1%80%D0%BE%D0%B4%D0%BE%D0%B2-%D0%B8-%D0%B0%D1%8D%D1%80%D0%BE%D0%BF%D0%BE%D1%80%D1%82%D0%BE%D0%B2
-Aviasales GraphQL API для доступа к данным по авиабилетам https://support.travelpayouts.com/hc/ru/articles/4417975783314-GraphQL-API-%D0%B4%D0%BB%D1%8F-%D0%B4%D0%BE%D1%81%D1%82%D1%83%D0%BF%D0%B0-%D0%BA-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D0%BC-%D0%BF%D0%BE-%D0%B0%D0%B2%D0%B8%D0%B0%D0%B1%D0%B8%D0%BB%D0%B5%D1%82%D0%B0%D0%BC
-Venv https://magnetic-evergreen-187.notion.site/8e8aed7250e646cbb729bf794cc5e46e
-Хранение данных https://magnetic-evergreen-187.notion.site/bb16739b5c0442548d5faf21283e1995
-Архетиктура https://magnetic-evergreen-187.notion.site/1e9ddbe939854295b833468ad88ac4c1
-Диалоги https://magnetic-evergreen-187.notion.site/6bc86bb9128b4b9b84b29cd2898fe4a8
-история https://magnetic-evergreen-187.notion.site/00cb239e20844dce9946641166a5937d

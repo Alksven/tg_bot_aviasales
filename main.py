@@ -6,7 +6,16 @@ from utils.set_bot_commands import set_default_commands
 
 
 async def on_startup(dp):
-    print('Бот вышел в онлайн')
+    """
+    Функция, вызываемая при запуске бота, которая запускает БД.
+
+    Параметры:
+    - dp: Dispatcher - объект диспетчера Aiogram.
+
+    Возвращаемое значение:
+    Отсутствует.
+
+    """
     start_db()
 
 

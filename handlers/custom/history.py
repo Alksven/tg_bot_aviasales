@@ -1,30 +1,45 @@
 from aiogram import types
-from loder import dp, bot
-from utils.get_info_ticket.info_ticket import print_info_ticket
-from utils.get_tickets.get_tickets import get_tickets
+from loder import dp, bot, logger
 from aiogram.dispatcher import FSMContext
 from states.history_state import HistoryInfo
 from data_base.history import get_history
-from keyboards.inline import add_date
-from utils.code_city.iata_code import get_code_city
 
 
-async def history(message: types.Message, state: FSMContext):
+
+async def history(message: types.Message, state: FSMContext) -> None:
+    """
+    Обрабатывает команду "/history" для получения истории просмотра пользователя.
+
+    Параметры:
+    - message: types.Message - сообщение пользователя.
+    - state: FSMContext - состояние FSM (Finite State Machine) для управления состояниями бота.
+
+    Возвращаемое значение:
+    None
+
+    Исключения:
+    Отсутствуют.
+    """
     await state.finish()
-    user_id = message.from_user.id
-    data = get_history(user_id)
-    await state.set_state(HistoryInfo.get_list_history)
-    await bot.send_message(chat_id=user_id, text='Ваша история просмотра')
-    for ticket in data:
-        origin = ticket[0]
-        destination = ticket[1]
-        departure_at = ticket[2]
-        price = ticket[3]
-        link =  ticket[4]
-        text = f"{origin} --> {destination}\n{departure_at}\n{price} руб.\n['Ссылка на рейс']({link})"
-        await bot.send_message(chat_id=user_id,  text=text, disable_web_page_preview=True, parse_mode=types.ParseMode.MARKDOWN)
-        await state.finish()
+    user_id: str = message.from_user.id
+    data: list = get_history(user_id)
+    if not data:
+        await message.answer(text="Ваша история просмотра пуста.\nЧтобы начать поиск, воспользуйтесь командой /search")
+        logger.warning("Запрос пустой истории")
+    else:
+        await state.set_state(HistoryInfo.get_list_history)
+        await bot.send_message(chat_id=user_id, text='Ваша история просмотра')
+        for ticket in data:
+            origin: str = ticket[0]
+            destination: str = ticket[1]
+            date: str = ticket[2].split("T")[0]
+            time: str = ticket[2].split("T")[1][:5]
+            departure_at: str = f"{date} {time}"
+            price: str = ticket[3]
+            link: str = ticket[4]
+            text: str = f"{origin} --> {destination}, Дата: {departure_at}\nЦена {price} руб. ['Ссылка на рейс']({link})"
+            await bot.send_message(chat_id=user_id,  text=text, disable_web_page_preview=True, parse_mode=types.ParseMode.MARKDOWN)
+            await state.finish()
 
 
-
-dp.register_message_handler(history, commands=['history'])
+dp.register_message_handler(history, commands=['history'], state="*")
