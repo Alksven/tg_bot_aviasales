@@ -31,7 +31,7 @@
 **Установка**
 Чтобы установить этого бота на свой сервер, выполните следующие шаги:
 
-1. Клонируйте репозиторий с помощью команды git clone https://gitlab.skillbox.ru/veniamin_alekseev/python_basic_diploma.git.
+1. Клонируйте репозиторий с помощью команды git clone https://github.com/Alksven/tg_bot_aviasales.git
 2. Переходим в папку с загруженной программой, открываем терминал.
 3. Устанавливает виртуальное окружение командой python3 -m venv venv
 На OS Windows python -m venv venv
