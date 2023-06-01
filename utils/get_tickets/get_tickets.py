@@ -4,6 +4,7 @@ import requests
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from states.ticket_info import FlightInfo
+from datetime import datetime
 
 
 async def start_search_ticket(message: types.Message, state: FSMContext) -> None:
@@ -33,7 +34,8 @@ async def start_search_ticket(message: types.Message, state: FSMContext) -> None
 
 def get_tickets(data: dict[str, str]) -> dict[int, dict[str, str]]:
     """
-    Получает список билетов на основе переданных данных.
+    Получает список билетов на основе переданных данных. Если выгодных билетов не оказывается на нужные даты, присылает
+    весь список полученных билетов.
 
     Параметры:
     - data: Dict[str, str] - словарь с данными, содержащими информацию о городах, датах и других параметрах для поиска билетов.
@@ -50,27 +52,39 @@ def get_tickets(data: dict[str, str]) -> dict[int, dict[str, str]]:
     - В данной реализации используется только первая страница с билетами (page=1) и ограничение на количество билетов (limit=15).
     """
 
-    request_url: str = "https://api.travelpayouts.com/aviasales/v3/prices_for_dates?"
+    request_url: str = "https://api.travelpayouts.com/aviasales/v3/prices_for_dates"
     token_av: str = config.TOKEN_AV
-    list_tickets = dict()
+    from_date = datetime.strptime(data['FlightInfo:from_date'], "%Y-%m-%d").date()
+    to_date = datetime.strptime(data['FlightInfo:to_date'], "%Y-%m-%d").date()
+    list_tickets: dict = dict()
+    list_all_tickets: dict = dict()
     params: dict = {
         "origin": data['from_city'],
         "destination": data['to_city'],
-        "beginning_of_period": data['FlightInfo:from_date'],
-        "period_type": data['FlightInfo:to_date'],
+        "departure_at": "",
+        "return_at": "",
         "one_way": "true",
         "sorting": "price",
         "show_to_affiliates": "true",
         "page": "1",
-        "limit": "15",
+        "limit": "50",
         "token": token_av
     }
 
     response: requests.get = requests.get(request_url, params=params)
     data: response.json = response.json()
     tickets: list = data["data"]
+    count_ticket: int = 1
     for i_ticket, ticket in enumerate(tickets):
-        list_tickets[i_ticket + 1] = ticket
+        list_all_tickets[i_ticket + 1] = ticket
+        date = ticket['departure_at'].split("T")[0]
+        target_date = datetime.strptime(date, "%Y-%m-%d").date()
+        if from_date <= target_date <= to_date:
+            list_tickets[count_ticket] = ticket
+            count_ticket += 1
+    if len(list_tickets) == 0:
+        list_all_tickets["all_ticket"] = True
+        return list_all_tickets
 
     return list_tickets
 
@@ -93,6 +107,7 @@ return_transfers — количество пересадок на пути «о�
 duration — общая продолжительность перелёта туда-обратно в минутах.
 duration_to — продолжительность перелёта до места назначения в минутах.
 duration_back — продолжительность перелёта обратно в минутах.
-link — ссылка на билет. Добавьте этот код к адресу https://www.aviasales.ru/, чтобы открыть результаты поиска по данному направлению на сайте Авиасейлс. Чтобы сделать из ссылки партнёрскую, используйте Генератор ссылок.
 currency — валюта, в которой отображается цена на билеты.
+link — ссылка на билет. Добавьте этот код к адресу https://www.aviasales.ru/, чтобы открыть результаты поиска по данному направлению на сайте Авиасейлс. Чтобы сделать из ссылки партнёрскую, используйте Генератор ссылок.
+
 """

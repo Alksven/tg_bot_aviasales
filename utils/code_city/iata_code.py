@@ -19,7 +19,7 @@ def get_code_city(city: str) -> Any:
         - В случае неправильного ввода города или аэропорта, вызывается исключение TypeError.
         - В случае возникновения других ошибок при обращении к API, исключение обрабатывается и логируется.
     """
-    if not city.isalpha():
+    if city.isdigit():
         logger.warning("Не правильный ввод")
         return False
     else:

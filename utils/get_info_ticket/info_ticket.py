@@ -19,7 +19,7 @@ async def get_ready_message(state: FSMContext) -> Tuple[str, str]:
        Tuple[str, str] - кортеж, содержащий текст сообщения с информацией о выбранном билете и ссылку на билет.
        """
     data: dict = await state.get_data()
-    index: str = data["num_ticket"]
+    index: int = data["num_ticket"]
     origin: str = data['list_tickets'][index]['origin']
     flight_number: str = data['list_tickets'][index]['flight_number']
     date: str = data['list_tickets'][index]['departure_at'].split("T")[0]
@@ -37,6 +37,10 @@ async def get_ready_message(state: FSMContext) -> Tuple[str, str]:
                   f"Цена: {price} руб.\n" \
                   f"Пересадки: {transfers}\n" \
                   f"Билет {index} из {len(data['list_tickets'])}"
+
+    text_all_tickets = "В выбранные вами даты выгодных билетов не оказалось.\nПосмотрите другие варианты:\n\n"
+    if 'all_ticket' in data['list_tickets']:
+        result = text_all_tickets + result
     return result, link
 
 

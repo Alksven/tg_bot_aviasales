@@ -64,7 +64,6 @@ async def add_history(message, state: FSMContext) -> None:
         placeholders: str = ', '.join('?' * len(data['list_tickets'][index]))
         sql_query: str = f'INSERT INTO data ({fields}) VALUES ({placeholders})'
         cur.execute(sql_query, tuple(data['list_tickets'][index].values()))
-        logger.debug("Отработал add_history")
         base.commit()
 
 

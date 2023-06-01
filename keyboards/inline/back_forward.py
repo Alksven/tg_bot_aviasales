@@ -55,7 +55,7 @@ async def step_forward(call: types.CallbackQuery, state: FSMContext) -> None:
         logger.warning(f"выходи из диапазона {data['num_ticket']}")
         await call.answer(text="Это и так последний билет")
     else:
-        num_ticket:int = data['num_ticket'] + 1
+        num_ticket: int = data['num_ticket'] + 1
         await state.update_data(num_ticket=num_ticket)
         await info_ticket.print_info_ticket(call.message, state)
 
