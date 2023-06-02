@@ -20,6 +20,7 @@ async def low(message: types.Message, state: FSMContext) -> None:
 
         """
     state_now: str = await state.get_state()
+    logger.debug(state_now)
     if state_now is None:
         await message.answer(text="Вы еще не начали поиск билетов.\nВоспользуйтесь командой /search ")
         logger.warning("Запрос без поиска")

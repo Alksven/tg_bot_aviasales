@@ -180,7 +180,8 @@ async def input_day(call: types.CallbackQuery, state: FSMContext):
                 await state.update_data({state_name: ready_date})
                 await call.message.edit_text(text="Вы ввели некорректную дату. Попробуйте снова.",
                                              reply_markup=start_get_date())
-            await start_search_ticket(call.message, state)
+            else:
+                await start_search_ticket(call.message, state)
         else:
             await state.set_state(FlightInfo.to_date)
             await call.message.edit_text(text=f"Ищем билеты с {ready_date}\nПо какую дату?", reply_markup=start_get_date())

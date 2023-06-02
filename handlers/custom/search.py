@@ -52,7 +52,7 @@ async def get_city_from(message: types.Message, state: FSMContext) -> None:
             await state.set_state(FlightInfo.to_city)
             await message.answer('Куда летим?')
         else:
-            await message.answer('Ну ты совсем ошибся.\nВведи название города нормально.')
+            await message.answer('Возможно ошибся либо аэропорта нет в этом городе.\nПопробуй снова.')
     except Exception as es:
         logger.warning(es)
 
@@ -80,7 +80,7 @@ async def get_city_to(message: types.Message, state: FSMContext) -> None:
             await state.set_state(FlightInfo.from_date)
             await message.answer(text='С какой даты ищем билеты?', reply_markup=add_date.start_get_date())
         else:
-            await message.answer('Ну ты совсем ошибся.\nВведи название города нормально.')
+            await message.answer('Возможно ошибся либо аэропорта нет в этом городе.\nПопробуй снова.')
     except Exception as es:
         logger.warning(es)
 
