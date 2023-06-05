@@ -19,10 +19,11 @@ def get_code_city(city: str) -> Any:
         - В случае неправильного ввода города или аэропорта, вызывается исключение TypeError.
         - В случае возникновения других ошибок при обращении к API, исключение обрабатывается и логируется.
     """
-
-    if city.isdigit() or '~!@#$%^&*()_+={}[]\|:;"<>,.?/' in city:
-        logger.warning("Не правильный ввод")
-        return False
+    invalid_sym = '~!@#$%^&*()_+={}[]\|:;"<>,.?/0123456789'
+    for i in city:
+        if i in invalid_sym:
+            logger.warning(f"Не правильный ввод - {city}")
+            return False
     else:
         url: requests.Response = requests.get(
             f'https://autocomplete.travelpayouts.com/places2?locale=en&types[]=airport&types[]=city&term={city}')
